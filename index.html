@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Debate System</title>
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+#tom, #jerry {
+  position: absolute;
+  top: 40%;
+  width: 150px;
+  transition: all 1.5s ease;
+}
+
+#tom { left: 10%; }
+#jerry { right: 10%; }
+
+.move {
+  left: 40% !important;
+  right: 40% !important;
+}
+
+#output {
+  margin-top: 200px;
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚔️ AI Debate Arena</h1>
+
+<input id="query" placeholder="Enter your question..." size="50">
+<button onclick="startDebate()">Start</button>
+
+<br><br>
+
+<img id="tom" src="tom.png">
+<img id="jerry" src="jerry.png">
+
+<div id="output"></div>
+
+<script>
+function startDebate() {
+  let query = document.getElementById("query").value;
+
+  let tom = document.getElementById("tom");
+  let jerry = document.getElementById("jerry");
+
+  // Move characters
+  tom.style.left = "40%";
+  jerry.style.right = "40%";
+
+  fetch("http://127.0.0.1:5000/ask", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({query: query})
+  })
+  .then(res => res.json())
+  .then(data => {
+      // Fade out characters
+      tom.style.opacity = 0;
+      jerry.style.opacity = 0;
+
+      // Show result
+      let output = document.getElementById("output");
+      output.style.display = "block";
+      output.innerHTML = "<h2>Result:</h2>" + data.result;
+  });
+}
+</script>
+
+</body>
+</html>
